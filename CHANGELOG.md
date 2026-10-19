@@ -7,6 +7,38 @@ dan proyek ini menggunakan [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-10-19
+
+### Added
+
+- **Device Capability Gate** (§4B) — deteksi read-only CPU/RAM/disk/GPU, klasifikasi tier (🟢 High / 🟡 Mid / 🔴 Low), dan pemilihan strategi tool call (Short-time / Balanced / Long-time).
+- **Tier-based tool strategy** — timeout call foreground (60/180/600 detik), ambang background (>5s/>30s/>2m), checkpoint (5/10/20 menit), batas paralel BG (1/2/3), batas sub-agent (0/2/5), strategi install/build/test, dan skala Bug Hunt per tier.
+- **Warning & izin operasi berat** (§4B.8) untuk tier 🔴/🟡, dengan opsi chunk lebih kecil dan mitigasi konkret.
+- **Kondisi dinamis** (§4B.5) — thermal throttle, battery <20%, free RAM <1GB, swap berat, dan free disk <10GB dapat menurunkan tier sementara.
+- **Integrasi tier ke gerbang hilir** — §8.4 Framework Evidence, §8.5 Sub-Agent Spawn, §13A Background Shell, §14 Bug Hunt, dan §13 Error Gate membaca §4B.
+- **Referensi device** di §20.14 dan §20.15 (deteksi, tier, baterai, thermal, GPU, catatan VM).
+- README: fitur Device Capability Gate dan catatan kompatibilitas deteksi per platform.
+
+### Changed
+
+- **Gate order** — Device Capability menjadi 0B setelah Program Identity (0A), Credential menjadi 0C (§3.2, §4A.1, §5.1, §17, §19).
+- **§8.5.2 / §8.5.4 / §8.5.7** — spawn sub-agent dilarang di tier 🔴; batas 2 di 🟡, 5 di 🟢; format izin menyertakan device tier.
+- **§13A** — ambang background dan batas paralel mengikuti tier; timeout task background dibedakan dari timeout call foreground.
+- **§14.2** — skala Bug Hunt per tier (per file / per folder / full).
+- **§4B.7 hierarki** — §4B menang untuk konflik resource, tetapi tidak boleh menurunkan standar correctness/keamanan.
+- **§21 Definition of Done** — Device Gate, tier/strategi, warning operasi berat, dan batas paralel masuk kriteria selesai.
+- **Cheat sheet §19** — blok DEVICE CAPABILITY GATE dan larangan terkait device.
+
+### Fixed
+
+- **Timeout membunuh task** — spec v2.6 menyebut “timeout 60 detik” untuk tier 🔴; ini dikoreksi menjadi batas call foreground. Task background (install/build/test/docker) memakai timeout terpisah 10/15/20/30 menit dan hanya di-kill jika stall, bukan saat checkpoint.
+- **Klasifikasi HDD** — tabel low-end yang menyebut HDD otomatis 🔴 dikoreksi: HDD membatasi tier maksimal 🟡, dan baru 🔴 jika free disk <10GB atau RAM <8GB.
+- **GPU sebagai dimensi tier** — dikoreksi: GPU/iGPU bukan penentu tier; hanya dicatat untuk tugas render/ML. `AdapterRAM` Windows yang bisa overflow >4GB diberi catatan.
+- **`Get-PSDrive C`** diganti `Get-PSDrive -PSProvider FileSystem` agar tidak mengasumsikan drive sistem adalah `C:`.
+- **Contoh background yang memblokir** — `sleep 60` dihapus dari contoh; diganti `nohup` + log + PID dan pengecekan berkala tanpa memblokir agent.
+- **Contoh build/test paralel di 🔴** dihapus karena berebut resource dan file output.
+- **Privasi device** — ditambahkan larangan mengumpulkan serial number, UUID, MAC, hostname, username, dan nama mesin; larangan benchmark dan `sudo` untuk deteksi.
+
 ## [2.5.0] - 2026-10-19
 
 ### Added

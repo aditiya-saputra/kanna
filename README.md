@@ -2,22 +2,23 @@
 
 **Fact-Verifying Tsundere Coder** — skill agent untuk coding, refactor, bug hunt, dan verifikasi fakta lapangan.
 
-[![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.6.0-blue.svg)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > "Aku bukan asisten yang bilang 'siap, kak!' ke setiap permintaan. Aku partner yang bikin kamu nggak nyesel minggu depan."
 
-Kanna adalah persona coding agent berbahasa Indonesia yang menolak menyentuh kode sebelum gerbang keamanan dan desain terpenuhi. Dia mendeteksi program AI agent yang dipakai, memverifikasi kapabilitasnya lewat dokumentasi resmi, memverifikasi klaim sebelum dipakai, hemat baris kode, mencatat technical debt secara eksplisit, dan aktif mencari bug sebelum menyatakan pekerjaan selesai.
+Kanna adalah persona coding agent berbahasa Indonesia yang menolak menyentuh kode sebelum gerbang keamanan, identitas program, kapabilitas perangkat, dan desain terpenuhi. Dia mendeteksi program AI agent dan spek perangkat yang dipakai, memverifikasi kapabilitas lewat dokumentasi resmi, memverifikasi klaim sebelum dipakai, hemat baris kode, mencatat technical debt secara eksplisit, dan aktif mencari bug sebelum menyatakan pekerjaan selesai.
 
 ## Fitur
 
-- **Gerbang berurutan yang tidak bisa dibalik** — Root/Admin, Program Identity, Credential, Backup, Documentation, Design, Context7, dan Gerbang Hemat.
+- **Gerbang berurutan yang tidak bisa dibalik** — Root/Admin, Program Identity, Device Capability, Credential, Backup, Documentation, Design, Context7, dan Gerbang Hemat.
 - **Program Identity Gate** — mendeteksi program AI agent lewat parent PID, env var (nama saja), config marker, dan versi. Hanya agent + parent chain yang diperiksa; command line di-redact.
 - **Compatibility Registry Lookup** — kapabilitas program (sub-agent, background shell, model routing, MCP) diverifikasi ke dokumentasi resmi, bukan dari ingatan. Status `❓` tidak pernah dijanjikan sebagai `✅`.
+- **Device Capability Gate** — mendeteksi CPU/RAM/disk/GPU secara read-only, mengklasifikasi tier (🟢 High / 🟡 Mid / 🔴 Low), lalu menyesuaikan strategi tool call: timeout call foreground, ambang background, batas paralel, batas sub-agent, dan skala Bug Hunt. Operasi berat di perangkat terbatas wajib peringatan + izin. Tidak mengumpulkan serial/UUID/MAC/hostname, tidak benchmark, tidak `sudo`.
 - **Verifikasi dokumentasi library** lewat Context7, dengan precheck MCP/Node.js dan fallback WebFetch yang jujur.
 - **Framework Adoption Evidence** — data adopsi wajib dari sumber primer (Stack Overflow Survey, State of JS, JetBrains, dsb.), bukan dari ingatan model.
 - **Error Gate** — Context7 → WebFetch → reproduksi → perbaikan → verifikasi pasca.
-- **Background Shell Protocol** — log path, PID, timeout, kill switch, maksimal 3 task per gelombang, dan cleanup 0 orphan. Background shell tidak diklaim menghemat token.
+- **Background Shell Protocol** — log path, PID, timeout task, kill switch, batas paralel per tier (🔴 1 / 🟡 2 / 🟢 3), dan cleanup 0 orphan. Timeout call foreground dibedakan dari timeout task background; background shell tidak diklaim menghemat token.
 - **Bug Hunt Protocol** — label bukti (✅ direproduksi, 📖 terbukti dari sumber, 🧠 penalaran, ⚠️ known issue), klasifikasi prioritas, zero-fix rule, dan reproduksi terisolasi.
 - **Line Count Protocol & Sub-Agent Spawn Gate** — ukur pekerjaan dulu, klasifikasi zona, lalu baca dukungan model routing dari Compatibility Registry sebelum spawn. Spawn membeli waktu dengan token; menolak spawn menghemat token.
 - **Zero Placeholder Rule** — larangan `// ...`, TODO tanpa rencana, stub diam-diam, fungsi kosong, silent catch, dan placeholder string di kode produksi.
@@ -185,8 +186,9 @@ Lalu tambahkan ke file instruksi agent — `AGENTS.md`, `.cursor/rules/`, `.wind
 Untuk semua task coding non-trivial, baca dan ikuti:
 `~/src/kanna/SKILL.md`
 
-Gerbang wajib: root/admin, kredensial, backup, dokumentasi, desain,
-verifikasi Context7/WebFetch, lalu bug hunt sebelum menyatakan selesai.
+Gerbang wajib: root/admin, identitas program, spek perangkat, kredensial,
+backup, dokumentasi, desain, verifikasi Context7/WebFetch,
+lalu bug hunt sebelum menyatakan selesai.
 ```
 
 Contoh agent yang umum memakai file instruksi: Windsurf, Cline, Zed, Continue, Aider, dan agent berbasis `AGENTS.md` lainnya. Selalu cek dokumentasi tool masing-masing untuk nama file dan lokasi yang tepat.
@@ -220,7 +222,8 @@ kanna/
 - Format `SKILL.md` + frontmatter YAML mengikuti Agent Skills open standard.
 - `name` sengaja dibuat lowercase (`kanna`) dan sama dengan nama folder agar lolos validasi Cursor, Copilot, dan Codex.
 - Progressive disclosure: agent hanya membaca `name` + `description` sampai skill benar-benar dipakai.
-- Perintah shell di dalam skill menyediakan varian Unix dan Windows; asumsi platform selalu disebutkan.
+- Perintah shell di dalam skill menyediakan varian Unix, macOS, dan Windows; asumsi platform selalu disebutkan.
+- Device Capability Gate memakai perintah read-only yang tersedia di platform masing-masing; jika sebuah perintah tidak ada, hasilnya “tidak terdeteksi”, bukan tebakan.
 - Beberapa agent (mis. Cursor dan Copilot) juga membaca direktori skill milik Claude/Codex untuk kompatibilitas, jadi satu instalasi bisa dipakai bersama.
 - Kanna memverifikasi kapabilitas program ke docs resmi (Claude Code, OpenCode, Cursor, Codex, Windsurf/Devin Desktop, Aider) sebelum menjanjikan sub-agent, background shell, atau model routing.
 
