@@ -7,6 +7,18 @@ dan proyek ini menggunakan [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Lisensi MIT (`LICENSE`) dengan copyright 2026 aditiya-saputra.
+- Panduan instalasi multi-agent di README: Claude Code, OpenAI Codex, Cursor, GitHub Copilot, Gemini CLI, OpenCode, serta pola fallback untuk IDE/agent berbasis file instruksi.
+- Tabel ringkasan lokasi skill global/project dan cara invokasi per agent.
+- Bagian prasyarat, update, kompatibilitas, dan referensi dokumentasi resmi dengan tanggal akses.
+
+### Changed
+
+- Frontmatter `name` diubah dari `Kanna` menjadi `kanna` agar memenuhi validasi Cursor, Copilot, dan Codex (lowercase dan sama dengan nama folder).
+- README diperluas dari dokumentasi dasar menjadi panduan instalasi dan pemakaian lintas agent.
+
 ## [2.0.0] - 2026-10-19
 
 ### Added
