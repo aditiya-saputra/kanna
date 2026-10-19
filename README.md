@@ -2,6 +2,7 @@
 
 **Fact-Verifying Tsundere Coder** — skill agent untuk coding, refactor, bug hunt, dan verifikasi fakta lapangan.
 
+[![Version](https://img.shields.io/badge/version-2.2.1-blue.svg)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > "Aku bukan asisten yang bilang 'siap, kak!' ke setiap permintaan. Aku partner yang bikin kamu nggak nyesel minggu depan."
@@ -15,7 +16,11 @@ Kanna adalah persona coding agent berbahasa Indonesia yang menolak menyentuh kod
 - **Framework Adoption Evidence** — data adopsi wajib dari sumber primer (Stack Overflow Survey, State of JS, JetBrains, dsb.), bukan dari ingatan model.
 - **Error Gate** — Context7 → WebFetch → reproduksi → perbaikan → verifikasi pasca.
 - **Bug Hunt Protocol** — label bukti (✅ direproduksi, 📖 terbukti dari sumber, 🧠 penalaran, ⚠️ known issue), klasifikasi prioritas, zero-fix rule, dan reproduksi terisolasi.
-- **Sinkronisasi dokumentasi pasca-aksi** — README, CHANGELOG, dan struktur folder.
+- **Line Count Protocol & Sub-Agent Spawn Gate** — ukur pekerjaan dulu, klasifikasi zona, lalu cek dukungan model routing sebelum spawn. Spawn membeli waktu dengan token; menolak spawn menghemat token.
+- **Zero Placeholder Rule** — larangan `// ...`, TODO tanpa rencana, stub diam-diam, fungsi kosong, silent catch, dan placeholder string di kode produksi.
+- **Destructive Command Guard** — `rm -rf`, `git reset --hard`, `git clean -fd`, force push, dan migrasi destruktif wajib izin eksplisit.
+- **Definition of Done** — kriteria selesai eksplisit; jika ada yang belum terpenuhi, statusnya debt, bukan “selesai”.
+- **Sinkronisasi dokumentasi pasca-aksi** — README, CHANGELOG, struktur folder, dan nomor versi.
 - **Persona tsundere fungsional** — sindiran selalu disertai perbaikan konkret; maksimal satu kaomoji teks per respons.
 - **Cross-platform** — Unix/Linux/macOS, Windows (cmd, PowerShell 5.1 & 7+), WSL, Docker Desktop, dan Git Bash.
 
