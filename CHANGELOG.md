@@ -7,6 +7,41 @@ dan proyek ini menggunakan [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-10-19
+
+### Added
+
+- **Program Identity Gate** (§4A) — deteksi program AI agent lewat parent PID chain (maksimal 5 level), env var nama saja, config marker, versi, lalu tanya user. Cache per sesi; invalidasi saat program/versi berubah.
+- **Compatibility Registry Lookup** (§4A.7) — verifikasi kapabilitas program (sub-agent foreground/background, background shell, model routing, MCP) ke dokumentasi resmi, dengan format status + kutipan/ringkas + URL + tanggal akses.
+- **Background Shell Protocol** (§13A) — log path, PID, timeout, kill switch, maksimal 3 task per gelombang, monitoring, cleanup 0 orphan, dan fallback foreground yang jujur.
+- **Batas privasi deteksi program** — hanya agent + parent chain; command line di-redact; dilarang dump environ penuh atau membaca isi config.
+- **Gate order baru** — Program Identity (0A) setelah Root/Admin, sebelum Credential; Background Shell sebagai modifier di fase aksi.
+- **DoD baru** — Program Identity, Compatibility Lookup, dan Background Cleanup masuk kriteria selesai.
+- README: fitur Program Identity, Compatibility Registry, dan Background Shell; referensi docs resmi per program.
+
+### Changed
+
+- **Capability matrix §4A.5 sekarang eksplisit sebagai hipotesis**; §4A.7.4 menjadi titik awal terverifikasi per 2026-10-19. Status `❓` berarti “tidak ditemukan di docs”, bukan bukti fitur tidak ada.
+- **§8.5.1 membaca capability dari §4A.7**, bukan dari tabel hipotesis. Jika sub-agent foreground `❌/❓`, spawn tidak boleh dijanjikan.
+- **§9.2 membaca MCP client dari §4A.7**, bukan asumsi per program.
+- **Struktur output §17** mencakup Program/Compatibility, Background Shell Status, dan Background Cleanup.
+- **Cheat sheet §19 dan catatan implementasi §20** diperbarui dengan matriks, sumber docs, dan referensi background shell.
+- **Matriks Aider** — MCP ditandai `❓` karena tidak ditemukan MCP native di docs, bukan `❌`.
+- **Windsurf/Devin Desktop** — “Simultaneous Cascades” dibedakan dari subagent dispatch; model routing per sub-agent tidak diklaim.
+
+### Fixed
+
+- **Cursor** — klaim “background shell ✅ (built-in Bash subagent)” dihapus. Docs Cursor hanya mendokumentasikan subagent Explore dan Browser; background shell tetap `❓`.
+- **Windsurf** — klaim sub-agent background `❌` dan kutipan “no documented user-facing background sub-agent dispatch” dihapus karena bukan kutipan resmi; status menjadi `❓`.
+- **OpenCode** — sub-agent background `✅` sesuai docs V2 (child session foreground/background); background shell `✅` sesuai docs tool shell (parameter `background`).
+- **Codex** — model routing `✅` (custom agent TOML), background shell `❓`; background subagent dibedakan dari proses detached.
+- **Claude Code** — background shell `✅` (`run_in_background: true`), dengan catatan batas 30 menit default / 2 jam maksimum.
+- **Deteksi env portabel** — mengganti `${!v}` (bash-only) dengan `printenv "$v"` yang bekerja di bash/zsh; value tetap tidak dicetak.
+- **macOS** — menambahkan fallback `ps -p ... -o comm=,ppid=` karena `/proc` tidak tersedia.
+- **Background capability test** — tes `sleep` dihapus sebagai bukti; capability wajib dari docs/schema tool, jika tidak jelas → foreground.
+- **Konsistensi routing Windsurf** — tabel §8.5.1 disamakan dengan §4A.7.4 (`❌`, bukan `⚠️`).
+- **Semua perbaikan v2.2.1 dipertahankan** — Destructive Command Guard, definisi non-trivial, kontrak output sub-agent, placeholder check yang aman untuk staged/untracked, dan Definition of Done.
+
 ## [2.2.1] - 2026-10-19
 
 ### Added
